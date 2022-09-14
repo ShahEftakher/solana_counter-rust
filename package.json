@@ -1,0 +1,14 @@
+{
+  "name": "counter-rust",
+  "version": "1.0.0",
+  "description": "Counter program for solana",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "ESD",
+  "license": "ISC",
+  "devDependencies": {
+    "typescript": "^4.8.3"
+  }
+}
