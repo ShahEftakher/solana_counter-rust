@@ -2,13 +2,21 @@
   "name": "counter-rust",
   "version": "1.0.0",
   "description": "Counter program for solana",
-  "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node src/client/main.ts",
+    "build:program": "cargo build-bpf --manifest-path=./src/program/Cargo.toml --bpf-out-dir=dist/program"
   },
   "author": "ESD",
   "license": "ISC",
   "devDependencies": {
+    "ts-node": "^10.9.1",
     "typescript": "^4.8.3"
+  },
+  "dependencies": {
+    "@solana/web3.js": "^1.61.1",
+    "borsh": "^0.7.0",
+    "mz": "^2.7.0",
+    "yaml": "^2.1.1"
   }
 }

@@ -1,1 +1,8 @@
 node_modules
+dist
+test-ledger
+.vscode
+dist
+
+
+package-lock.json
