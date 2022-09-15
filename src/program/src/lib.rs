@@ -25,14 +25,14 @@ pub fn process_instruction(
     //afaik it is supposed to be the return type of the data to be returned from this function
     let accounts_iter = &mut accounts.iter();
     msg!("{:?}", accounts_iter);
-    let account = next_account_info(accounts_iter);
+    let account = next_account_info(accounts_iter)?;
     msg!("{:?}", account);
 
     msg!("{:?}", program_id);
 
-    // if account.owner != program_id {
-    //     msg!("Greeted account does not have the correct program id");
-    //     return Err(ProgramError::IncorrectProgramId);
-    // }
+    if account.owner != program_id {
+        msg!("Greeted account does not have the correct program id");
+        return Err(ProgramError::IncorrectProgramId);
+    }
     Ok(())
 }
