@@ -57,4 +57,36 @@ class CounterAccount {
   }
 }
 
+//a mapping with the CounterAccoun, the data account to the counter-rust program
+//here the format will be the same as the struct of the rust account
+const CounterShema = new Map([
+  [CounterAccount, { kind: 'struct', fields: [['counter', 'u32']] }],
+]);
 
+//so solana expects to know the size of everything beforehand
+//that's why we are getting the size of the greeting account ig
+//size of the byte array
+const GREETING_SIZE = borsh.serialize(
+  CounterShema,
+  new CounterAccount()
+).length;
+
+//now we establish a connection to the cluster
+//with rpc link
+export const establishConnection = async (): Promise<void> => {
+  const rpcUrl = await getRpcUrl();
+  connection = new Connection(rpcUrl, 'confirmed');
+  const version = await connection.getVersion();
+  console.log('Connection to cluster established', version);
+};
+
+//setup an account to pay fee
+export const establishPayer = async (): Promise<void> => {
+  let fees = 0;
+  if (!payer) {
+    const { feeCalculator } = await connection.getRecentBlockhash();
+    fees += await connection.getMinimumBalanceForRentExemption(GREETING_SIZE);
+    fees += feeCalculator.lamportsPerSignature * 100;
+    payer = await getPayer();
+  }
+};
