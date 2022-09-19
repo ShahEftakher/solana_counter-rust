@@ -119,7 +119,7 @@ export const establishPayer = async (): Promise<void> => {
 };
 
 //check if the program is deployed on the chain
-const checkProgram = async (): Promise<void> => {
+export const checkProgram = async (): Promise<void> => {
   //while compiled a keypair for the program account is created
   //the public key of the program account is the program id
   try {
@@ -188,7 +188,7 @@ const checkProgram = async (): Promise<void> => {
 //interacting with the onchain program and the PDA
 export const increament = async (): Promise<void> => {
   //Printing PDA pubkey
-  console.log('Saying hello to', countPubKey.toBase58());
+  console.log('PDA ', countPubKey.toBase58());
   //**Buffer is used to perform operation on raw binary data
   //create an Tranaction instruction
   const instruction = new TransactionInstruction({
@@ -220,7 +220,7 @@ export const reportCounterState = async (): Promise<void> => {
   //print status
   console.log(
     countPubKey.toBase58(),
-    'has been greeted',
+    'Counter has been called ',
     count.counter,
     'time(s)'
   );
