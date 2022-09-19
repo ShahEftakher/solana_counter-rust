@@ -24,7 +24,7 @@ let payer: Keypair;
 //program id
 let programId: PublicKey;
 
-//public of the account invoking the counter
+//public key of the PDA
 let countPubKey: PublicKey;
 
 //path to compiled program file
@@ -158,39 +158,46 @@ const checkProgram = async (): Promise<void> => {
   );
   //check if the a PDA is already created
   const counterAccount = await connection.getAccountInfo(countPubKey);
+  //if not created create the PDA
   if (counterAccount === null) {
     console.log('Createing PDA at: ' + countPubKey.toBase58());
-  }
 
-  //find the funds required for creating PDA
-  const lamports = await connection.getMinimumBalanceForRentExemption(
-    COUNTER_SIZE
-  );
-  //transaction structure
-  /**
-   *
-   */
-  const transaction = new Transaction().add(
-    SystemProgram.createAccountWithSeed({
-      fromPubkey: payer.publicKey,
-      basePubkey: payer.publicKey,
-      seed: COUNTER_SEED,
-      newAccountPubkey: countPubKey,
-      lamports,
-      space: COUNTER_SIZE,
-      programId,
-    })
-  );
-  await sendAndConfirmTransaction(connection, transaction, [payer]);
+    //find the funds required for creating PDA
+    const lamports = await connection.getMinimumBalanceForRentExemption(
+      COUNTER_SIZE
+    );
+    //transaction structure
+    /**
+     *
+     */
+    const transaction = new Transaction().add(
+      SystemProgram.createAccountWithSeed({
+        fromPubkey: payer.publicKey,
+        basePubkey: payer.publicKey,
+        seed: COUNTER_SEED,
+        newAccountPubkey: countPubKey,
+        lamports,
+        space: COUNTER_SIZE,
+        programId,
+      })
+    );
+    await sendAndConfirmTransaction(connection, transaction, [payer]);
+  }
 };
 
+//interacting with the onchain program and the PDA
 export const increament = async (): Promise<void> => {
+  //Printing PDA pubkey
   console.log('Saying hello to', countPubKey.toBase58());
+  //**Buffer is used to perform operation on raw binary data
+  //create an Tranaction instruction
   const instruction = new TransactionInstruction({
     keys: [{ pubkey: countPubKey, isSigner: false, isWritable: true }],
     programId,
+    //allocating a Buffer of size zero
     data: Buffer.alloc(0),
   });
+  //send transaction
   await sendAndConfirmTransaction(
     connection,
     new Transaction().add(instruction),
@@ -198,7 +205,9 @@ export const increament = async (): Promise<void> => {
   );
 };
 
+//get the state of the program
 export const reportCounterState = async (): Promise<void> => {
+  //PDA connection
   const accountInfo = await connection.getAccountInfo(countPubKey);
   if (accountInfo === null) {
     throw 'Error cannot find count account';
@@ -208,6 +217,7 @@ export const reportCounterState = async (): Promise<void> => {
     CounterAccount,
     accountInfo.data
   );
+  //print status
   console.log(
     countPubKey.toBase58(),
     'has been greeted',
