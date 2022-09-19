@@ -55,7 +55,7 @@ export const getPayer = async (): Promise<Keypair> => {
 
 
 //creates idk what this does yet
-//will see later
+//generate keypair from secret key stored in the file system / any key secret phrase tbh
 export const createKeypairFromFile = async (
   filePath: string
 ): Promise<Keypair> => {
